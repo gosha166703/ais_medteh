@@ -1,11 +1,11 @@
 from sqlalchemy import String, DateTime, Boolean
 from sqlalchemy.orm import Mapped, mapped_column
 
-from db import engine, Base
+from webapp.db import Base
 
 from datetime import datetime
 
-class Fixed_assed(Base):
+class FixedAssed(Base):
     __tablename__ = "fixed_assed"
     id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str] = mapped_column(String(1000))
@@ -22,9 +22,4 @@ class Fixed_assed(Base):
     last_maintenance:Mapped[datetime] = mapped_column(DateTime)
 
     def __repr__(self):
-        return f"<Fixed_assed: {self.name},{self.serial_number}, {self.inventory_number}, {self.date_entry}, {self.status}>"
-
-
-if __name__ == "__main__":
-    Base.metadata.create_all(engine)
-    
+        return f"<FixedAssed: {self.name},{self.serial_number}, {self.inventory_number},{self.date_entry}, {self.status}>"

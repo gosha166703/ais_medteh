@@ -3,4 +3,7 @@ __pycache__
 .vscode
 env
 .DS_Store
- webapp/.DS_Store
+webapp/.DS_Store
+test.py
+.vscode/
+migrations/

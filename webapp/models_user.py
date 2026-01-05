@@ -1,16 +1,31 @@
 from sqlalchemy import String, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from db import engine, Base
+from werkzeug.security import generate_password_hash, check_password_hash
+from flask_login import UserMixin
+from webapp.db import Base
 
 
 #Пользователь
-class User(Base):
+class User(Base, UserMixin):
     __tablename__ = "users"
     id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str] = mapped_column(String(120))
-    email: Mapped[str] = mapped_column(unique=True)
+    email: Mapped[str] = mapped_column(String(50),unique=True)
+    lastname: Mapped[str] = mapped_column(String(120))
+    password: Mapped[str] = mapped_column(String(1000))
+
+    def set_password(self, password):
+        self.password = generate_password_hash(password)
+
+    def check_password(self, password):
+        return check_password_hash(self.password, password)
     
+    #Проверка, является ли пользователь аднминистратором
+    @property
+    def is_admin(self):
+        return self.role_id == 1
+
     #Внешний ключ к таблице ролей
     role_id: Mapped[int] = mapped_column(ForeignKey("roles.id"))
     
@@ -31,8 +46,3 @@ class Role(Base):
 
     def __repr__(self):
         return f"<Role: {self.name}>"
-    
-#Конструкция if __name__ == "__main__": - говорит нам: Если из терминала был запущен файл- выполни следующую процедуру
-
-if __name__ == "__main__":
-    Base.metadata.create_all(engine)
