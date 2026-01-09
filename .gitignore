@@ -7,3 +7,4 @@ webapp/.DS_Store
 test.py
 .vscode/
 migrations/
+base_new

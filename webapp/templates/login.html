@@ -1,393 +1,191 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ page_title }} - Система управления сервисом</title>
-    <!-- Здесь используется переменная page_title из Flask -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-        
-        body {
-            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            padding: 20px;
-        }
-        
-        .container {
-            display: flex;
-            max-width: 1000px;
-            width: 100%;
-            background-color: white;
-            border-radius: 16px;
-            overflow: hidden;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
-        }
-        
-        .welcome-section {
-            flex: 1;
-            background: linear-gradient(rgba(30, 60, 114, 0.9), rgba(42, 82, 152, 0.9)), url('https://images.unsplash.com/photo-1559757148-5c350d0d3c56?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80');
-            background-size: cover;
-            background-position: center;
-            padding: 40px;
-            color: white;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-        }
-        
-        .login-section {
-            flex: 1;
-            padding: 50px 40px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-        }
-        
-        .logo {
-            display: flex;
-            align-items: center;
-            margin-bottom: 30px;
-        }
-        
-        .logo-icon {
-            font-size: 32px;
-            margin-right: 15px;
-            color: #2a5298;
-        }
-        
-        .logo-text {
-            font-size: 24px;
-            font-weight: 700;
-            color: #1e3c72;
-        }
-        
-        .welcome-section h1 {
-            font-size: 28px;
-            margin-bottom: 20px;
-            line-height: 1.3;
-        }
-        
-        .welcome-section p {
-            font-size: 16px;
-            line-height: 1.6;
-            opacity: 0.9;
-            margin-bottom: 15px;
-        }
-        
-        .stats {
-            margin-top: 30px;
-            background-color: rgba(255, 255, 255, 0.15);
-            border-radius: 10px;
-            padding: 20px;
-        }
-        
-        .stat-item {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 10px;
-            padding-bottom: 10px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        
-        .stat-item:last-child {
-            margin-bottom: 0;
-            border-bottom: none;
-            padding-bottom: 0;
-        }
-        
-        .login-title {
-            font-size: 28px;
-            color: #1e3c72;
-            margin-bottom: 10px;
-        }
-        
-        .login-subtitle {
-            color: #666;
-            margin-bottom: 30px;
-            font-size: 15px;
-        }
-        
-        .form-group {
-            margin-bottom: 25px;
-            position: relative;
-        }
-        
-        label {
-            display: block;
-            margin-bottom: 8px;
-            color: #333;
-            font-weight: 600;
-            font-size: 14px;
-        }
-        
-        .input-with-icon {
-            position: relative;
-        }
-        
-        .input-with-icon i {
-            position: absolute;
-            left: 15px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: #777;
-        }
-        
-        input {
-            width: 100%;
-            padding: 15px 15px 15px 45px;
-            border: 2px solid #e1e5ee;
-            border-radius: 8px;
-            font-size: 16px;
-            transition: all 0.3s;
-        }
-        
-        input:focus {
-            outline: none;
-            border-color: #2a5298;
-            box-shadow: 0 0 0 3px rgba(42, 82, 152, 0.1);
-        }
-        
-        .submit-btn {
-            background: linear-gradient(to right, #1e3c72, #2a5298);
-            color: white;
-            border: none;
-            padding: 16px;
-            border-radius: 8px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-            width: 100%;
-            margin-top: 10px;
-        }
-        
-        .submit-btn:hover {
-            background: linear-gradient(to right, #2a5298, #3a62a8);
-            transform: translateY(-2px);
-            box-shadow: 0 7px 14px rgba(42, 82, 152, 0.2);
-        }
-        
-        .submit-btn:active {
-            transform: translateY(0);
-        }
-        
-        .footer-text {
-            text-align: center;
-            margin-top: 30px;
-            color: #777;
-            font-size: 14px;
-        }
-        
-        .footer-text a {
-            color: #2a5298;
-            text-decoration: none;
-            font-weight: 600;
-        }
-        
-        .footer-text a:hover {
-            text-decoration: underline;
-        }
-        
-        .error-message {
-            color: #e74c3c;
-            font-size: 14px;
-            margin-top: 5px;
-            display: none;
-        }
-        
-        /* Стили для сообщений об ошибках от Flask-WTF */
-        .flask-error {
-            color: #e74c3c;
-            font-size: 14px;
-            margin-top: 5px;
-        }
-        
-        .has-error input {
-            border-color: #e74c3c;
-        }
-        
-        /* Новые стили для алерта */
-        .flash-alert {
-            background-color: #fee;
-            border: 1px solid #fcc;
-            border-radius: 8px;
-            padding: 12px 15px;
-            margin-bottom: 25px;
-            color: #d00;
-            font-size: 15px;
-            line-height: 1.5;
-        }
-        
-        @media (max-width: 768px) {
-            .container {
-                flex-direction: column;
-            }
-            
-            .welcome-section, .login-section {
-                padding: 30px 25px;
-            }
-            
-            .welcome-section {
-                order: 2;
-            }
-            
-            .login-section {
-                order: 1;
-            }
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <div class="welcome-section">
-            <h1>Добро пожаловать в систему управления сервисом</h1>
-            <p>Автоматизированная информационная система Сервисного отдела для управления медицинским оборудованием.</p>
-            <p>Полный контроль над  оборудованием, отслеживание заявок и аналитика в реальном времени.</p>
-            <div class="welcome-features">
-                <div class="feature-item">
-                    <i class="fas fa-shield-alt feature-icon"></i>
-                    <div class="feature-text">
-                        <strong>Безопасный доступ</strong>
-                        <div style="font-size: 14px; opacity: 0.9;">Защищенная авторизация и контроль доступа</div>
-                    </div>
-                </div>
-                <div class="feature-item">
-                    <i class="fas fa-chart-line feature-icon"></i>
-                    <div class="feature-text">
-                        <strong>Мониторинг в реальном времени</strong>
-                        <div style="font-size: 14px; opacity: 0.9;">Отслеживание состояния оборудования онлайн</div>
-                    </div>
-                </div>
-                <div class="feature-item">
-                    <i class="fas fa-tasks feature-icon"></i>
-                    <div class="feature-text">
-                        <strong>Управление заявками</strong>
-                        <div style="font-size: 14px; opacity: 0.9;">Полный цикл обработки сервисных заявок</div>
-                    </div>
-                </div>
-            </div>
+{% extends "base.html" %}
+
+{% block title %}Вход - АИС Сервисного отдела{% endblock %}
+
+{% block extra_css %}
+<style>
+    body {
+        background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+        min-height: 100vh;
+    }
+    
+    .login-container {
+        display: flex;
+        min-height: 100vh;
+        align-items: center;
+        justify-content: center;
+        padding: 2rem;
+    }
+    
+    .login-card {
+        max-width: 440px;
+        width: 100%;
+        border: none;
+        border-radius: 16px;
+        box-shadow: 0 20px 60px rgba(30, 64, 175, 0.15);
+        overflow: hidden;
+    }
+    
+    .login-header {
+        background: linear-gradient(135deg, var(--dark-blue) 0%, var(--primary-blue) 100%);
+        padding: 2.5rem 2rem;
+        text-align: center;
+        color: white;
+    }
+    
+    .login-icon {
+        font-size: 3.5rem;
+        margin-bottom: 1rem;
+        display: block;
+    }
+    
+    .login-title {
+        font-size: 1.5rem;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+    }
+    
+    .login-subtitle {
+        opacity: 0.9;
+        font-size: 0.95rem;
+    }
+    
+    .login-body {
+        padding: 2.5rem 2rem;
+        background: white;
+    }
+    
+    .form-label {
+        font-weight: 500;
+        margin-bottom: 0.5rem;
+        color: #475569;
+    }
+    
+    .input-group-text {
+        background-color: #f8fafc;
+        border-color: #e2e8f0;
+        color: #64748b;
+    }
+    
+    .form-control {
+        border-left: 0;
+    }
+    
+    .form-control:focus {
+        border-color: #e2e8f0;
+        box-shadow: none;
+    }
+    
+    .form-control:focus + .input-group-text {
+        border-color: var(--primary-blue);
+    }
+    
+    .btn-login {
+        padding: 0.75rem;
+        font-weight: 500;
+        font-size: 1rem;
+    }
+    
+    .login-footer {
+        text-align: center;
+        padding-top: 1.5rem;
+        border-top: 1px solid #e2e8f0;
+        color: #64748b;
+        font-size: 0.9rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="login-container">
+    <div class="login-card">
+        <div class="login-header">
+            <i class="bi bi-gear-fill login-icon"></i>
+            <div class="login-title">АИС Сервисного отдела</div>
+            <div class="login-subtitle">Автоматизированная информационная система</div>
         </div>
         
-        <div class="login-section">
-            <div class="logo">
-                <i class="fas fa-tools logo-icon"></i>
-                <div class="logo-text">АИС Сервисного отдела</div>
-            </div>
-            {% with messages = get_flashed_messages() %}
-                {% if messages %}
-                <div class="flash-alert">
-                   {% for message in messages %}
-                       {{ message }}<br>
-                   {% endfor %}
-               </div>
-               {% endif %}
-           {% endwith %}
-            <h2 class="login-title">{{ page_title }}</h2>
-            <!-- Здесь используется переменная page_title из Flask -->
-            <p class="login-subtitle">Введите ваши учетные данные для доступа к системе</p>
+        <div class="login-body">
+            <h4 class="text-center mb-4">{{ page_title }}</h4>
             
-            <!-- Flask форма с передачей данных через form -->
-            <form method="POST" action="{{ url_for('process_login') }}" id="loginForm">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }} alert-dismissible fade show mb-4" role="alert">
+                            <i class="bi bi-{% if category == 'success' %}check-circle{% elif category == 'danger' %}exclamation-triangle{% elif category == 'warning' %}exclamation-circle{% else %}info-circle{% endif %} me-2"></i>
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+            
+            <form method="POST" action="{{ url_for('process_login') }}" novalidate>
                 {{ form.hidden_tag() }}
-                <!-- CSRF токен для защиты формы -->
                 
-                <div class="form-group">
-                    {{ form.username.label }}
-                    <!-- Используется label из формы Flask -->
-                    <div class="input-with-icon">
-                        <i class="fas fa-user"></i>
-                        {{ form.username(class="form-control", placeholder="Введите имя пользователя") }}
-                        <!-- Используется поле username из формы Flask -->
+                <div class="mb-4">
+                    <label for="{{ form.username.id }}" class="form-label">
+                        <i class="bi bi-person me-1"></i>Имя пользователя
+                    </label>
+                    <div class="input-group">
+                        <span class="input-group-text">
+                            <i class="bi bi-person"></i>
+                        </span>
+                        {{ form.username(class="form-control py-2" + (" is-invalid" if form.username.errors else ""), 
+                                       placeholder="Введите имя пользователя") }}
                     </div>
                     {% if form.username.errors %}
-                        <!-- Вывод ошибок валидации для username -->
-                        {% for error in form.username.errors %}
-                            <div class="flask-error">{{ error }}</div>
-                        {% endfor %}
+                        <div class="invalid-feedback d-block mt-1">
+                            {% for error in form.username.errors %}
+                                <i class="bi bi-exclamation-circle me-1"></i>{{ error }}
+                            {% endfor %}
+                        </div>
                     {% endif %}
                 </div>
                 
-                <div class="form-group">
-                    {{ form.password.label }}
-                    <!-- Используется label из формы Flask -->
-                    <div class="input-with-icon">
-                        <i class="fas fa-lock"></i>
-                        {{ form.password(class="form-control", placeholder="Введите пароль") }}
-                        <!-- Используется поле password из формы Flask -->
+                <div class="mb-4">
+                    <label for="{{ form.password.id }}" class="form-label">
+                        <i class="bi bi-key me-1"></i>Пароль
+                    </label>
+                    <div class="input-group">
+                        <span class="input-group-text">
+                            <i class="bi bi-lock"></i>
+                        </span>
+                        {{ form.password(class="form-control py-2" + (" is-invalid" if form.password.errors else ""), 
+                                       placeholder="Введите пароль") }}
                     </div>
                     {% if form.password.errors %}
-                        <!-- Вывод ошибок валидации для password -->
-                        {% for error in form.password.errors %}
-                            <div class="flask-error">{{ error }}</div>
-                        {% endfor %}
+                        <div class="invalid-feedback d-block mt-1">
+                            {% for error in form.password.errors %}
+                                <i class="bi bi-exclamation-circle me-1"></i>{{ error }}
+                            {% endfor %}
+                        </div>
                     {% endif %}
                 </div>
                 
-                {{ form.submit(class="submit-btn") }}
-                <!-- Используется кнопка submit из формы Flask -->
+                <div class="mb-4">
+                    <div class="form-check">
+                        {{ form.remember_me(class="form-check-input") }}
+                        <label class="form-check-label" for="{{ form.remember_me.id }}">
+                            Запомнить меня
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="d-grid mb-4">
+                    {{ form.submit(class="btn btn-primary btn-login") }}
+                </div>
             </form>
             
-            <div class="footer-text">
-                <p>Нет учетной записи? <a href="#">Свяжитесь с администратором n.toporichev@ais_mt.ru</a></p>
-                <p>© 2025 Система управления сервисом</p>
+            <div class="login-footer">
+                <p class="mb-1">Нет учетной записи?</p>
+                <p class="mb-0">
+                    <a href="#" class="text-primary text-decoration-none fw-medium">
+                        <i class="bi bi-envelope me-1"></i>Обратитесь к администратору
+                    </a>
+                </p>
             </div>
         </div>
     </div>
-
-    <script>
-        // JavaScript для дополнительной клиентской валидации
-        document.getElementById('loginForm')?.addEventListener('submit', function(e) {
-            const username = document.getElementById('username')?.value.trim();
-            const password = document.getElementById('password')?.value.trim();
-            
-            // Сброс предыдущих стилей ошибок
-            document.querySelectorAll('.has-error').forEach(el => {
-                el.classList.remove('has-error');
-            });
-            
-            let hasError = false;
-            
-            // Проверка имени пользователя
-            if (!username) {
-                const usernameField = document.getElementById('username');
-                if (usernameField) {
-                    usernameField.parentElement.parentElement.classList.add('has-error');
-                    hasError = true;
-                }
-            }
-            
-            // Проверка пароля
-            if (!password) {
-                const passwordField = document.getElementById('password');
-                if (passwordField) {
-                    passwordField.parentElement.parentElement.classList.add('has-error');
-                    hasError = true;
-                }
-            }
-            
-            if (hasError) {
-                e.preventDefault();
-            }
-        });
-        
-        // Убираем класс ошибки при вводе
-        document.querySelectorAll('input').forEach(input => {
-            input.addEventListener('input', function() {
-                if (this.value.trim()) {
-                    this.parentElement.parentElement.classList.remove('has-error');
-                }
-            });
-        });
-    </script>
-</body>
-</html>
+</div>
+{% endblock %}
