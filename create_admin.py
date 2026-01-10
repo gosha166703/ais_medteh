@@ -2,7 +2,7 @@ from getpass import getpass #очень похожа на input, но не пе�
 import sys # модуль взаимодействия с системными функциями 
 
 from webapp import create_app, db
-from webapp.models_user import User, Role
+from webapp.user.models import User, Role
 from sqlalchemy import select
 
 app = create_app()
@@ -23,7 +23,7 @@ with app.app_context():#Позволяет работать с нашей БД
         sys.exit(0)
 
     #Находим нужную роль в БД 
-    stmt = select(Role).where(Role.name == "Админ")
+    stmt = select(Role).where(Role.name == "Инженер")
     admin_role = db.session.execute(stmt).scalar_one_or_none()
 
     if not admin_role:

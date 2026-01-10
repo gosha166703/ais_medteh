@@ -1,16 +1,8 @@
 from flask_wtf import FlaskForm
-from wtforms import BooleanField, DateField, IntegerField, SelectField, StringField, PasswordField, SubmitField, TextAreaField
-from wtforms.validators import DataRequired, Length, Optional, ValidationError
+from wtforms import BooleanField, DateField, IntegerField, SelectField, StringField, SubmitField
+from wtforms.validators import DataRequired, Length, Optional
 
 from datetime import datetime
-
-#Форма авторизации
-class LoginForm(FlaskForm):
-    username = StringField("Имя пользователя", validators=[DataRequired()])
-    password = PasswordField("Пароль", validators=[DataRequired()])
-    remember_me = BooleanField("Запомнить меня")
-
-    submit = SubmitField("Отправить")
 
 #Форма создания и редактирования оборудования 
 class EquipmentForm(FlaskForm):

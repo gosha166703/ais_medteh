@@ -4,7 +4,7 @@ import csv, sys, os
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from webapp.db import db
-from webapp.models_equipment import Equipment
+from webapp.equipment.models import Equipment
 from webapp import create_app
 
 
@@ -34,6 +34,6 @@ def save_equipment_data(row):
 
 if __name__ == "__main__":
     app = create_app()
-    
+
     with app.app_context():
         read_csv("os_1.csv")

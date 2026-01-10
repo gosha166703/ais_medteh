@@ -6,7 +6,7 @@
 {% block breadcrumb %}
 <nav aria-label="breadcrumb" class="mt-2">
     <ol class="breadcrumb" style="background: transparent; padding: 0;">
-        <li class="breadcrumb-item"><a href="{{ url_for('index') }}">Главная</a></li>
+        <li class="breadcrumb-item"><a href="{{ url_for('home.index') }}">Главная</a></li>
         <li class="breadcrumb-item active" aria-current="page">Реестр ОС</li>
     </ol>
 </nav>
@@ -30,7 +30,7 @@
                     </div>
                 </div>
                 <div class="col-md-6 text-end">
-                    <a href="{{ url_for('create_equipment') }}" class="btn btn-primary">
+                    <a href="{{ url_for('equipment.create_equipment') }}" class="btn btn-primary">
                         <i class="bi bi-plus-circle me-2"></i> Добавить оборудование
                     </a>
                 </div>
@@ -105,21 +105,15 @@
                                     </span>
                                     {% endif %}
                                 </td>
-                                <td>
-                                    <div class="d-flex flex-column">
-                                        <span>{{ item.date_entry.strftime('%d.%m.%Y') }}</span>
-                                        <small class="text-muted time-ago" data-date="{{ item.date_entry.isoformat() if item.date_entry else '' }}"></small>
-                                    </div>
-                                </td>
                                 <td class="text-end">
                                     <div class="btn-group btn-group-sm" role="group">
-                                        <a href="{{ url_for('equipment_detail', id=item.id) }}" 
+                                        <a href="{{ url_for('equipment.equipment_detail', id=item.id) }}" 
                                            class="btn btn-outline-primary" 
                                            title="Просмотр карточки"
                                            data-bs-toggle="tooltip">
                                             <i class="bi bi-eye"></i>
                                         </a>
-                                        <a href="{{ url_for('equipment_edit', id=item.id) }}" 
+                                        <a href="{{ url_for('equipment.equipment_edit', id=item.id) }}" 
                                            class="btn btn-outline-warning" 
                                            title="Редактировать"
                                            data-bs-toggle="tooltip">
@@ -174,7 +168,7 @@
                                         </div>
                                         <div class="modal-footer">
                                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
-                                            <form action="{{ url_for('delete_equipment', id=item.id) }}" method="POST" class="d-inline">
+                                            <form action="{{ url_for('equipment.delete_equipment', id=item.id) }}" method="POST" class="d-inline">
                                                 <button type="submit" class="btn btn-danger">
                                                     <i class="bi bi-trash me-1"></i> Удалить
                                                 </button>
@@ -224,7 +218,7 @@
                 </div>
                 <h4 class="mb-3">Реестр оборудования пуст</h4>
                 <p class="text-muted mb-4">Начните работу, добавив первое оборудование в систему</p>
-                <a href="{{ url_for('create_equipment') }}" class="btn btn-primary btn-lg">
+                <a href="{{ url_for('equipment.create_equipment') }}" class="btn btn-primary btn-lg">
                     <i class="bi bi-plus-circle me-2"></i> Добавить оборудование
                 </a>
             </div>

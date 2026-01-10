@@ -6,8 +6,8 @@
 {% block breadcrumb %}
 <nav aria-label="breadcrumb" class="mt-2">
     <ol class="breadcrumb" style="background: transparent; padding: 0;">
-        <li class="breadcrumb-item"><a href="{{ url_for('index') }}">Главная</a></li>
-        <li class="breadcrumb-item"><a href="{{ url_for('equipment') }}">Реестр оборудования</a></li>
+        <li class="breadcrumb-item"><a href="{{ url_for('home.index') }}">Главная</a></li>
+        <li class="breadcrumb-item"><a href="{{ url_for('equipment.equipment') }}">Реестр оборудования</a></li>
         <li class="breadcrumb-item active" aria-current="page">{{ page_title }}</li>
     </ol>
 </nav>
@@ -166,7 +166,7 @@
                             </h5>
                             
                             <div class="row g-3">
-                                <div class="col-md-6">
+                                <!-- <div class="col-md-6">
                                     <label for="{{ form.date_entry.id }}" class="form-label fw-medium">Дата ввода в эксплуатацию</label>
                                     <div class="input-group">
                                         <span class="input-group-text">
@@ -183,7 +183,7 @@
                                         </div>
                                     {% endif %}
                                     <small class="form-text text-muted mt-1">Формат: ГГГГ-ММ-ДД</small>
-                                </div>
+                                </div> -->
                                 
                                 <div class="col-md-6">
                                     <label for="{{ form.last_maintenance.id }}" class="form-label fw-medium">Дата последнего ТО</label>
@@ -247,7 +247,7 @@
                         
                         <!-- Кнопки -->
                         <div class="d-flex justify-content-between mt-5 pt-4 border-top">
-                            <a href="{{ url_for('equipment') }}" class="btn btn-secondary">
+                            <a href="{{ url_for('equipment.equipment') }}" class="btn btn-secondary">
                                 <i class="bi bi-arrow-left me-2"></i> Отмена
                             </a>
                             <button type="submit" class="btn btn-primary">
