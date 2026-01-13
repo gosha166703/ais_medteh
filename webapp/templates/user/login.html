@@ -1,0 +1,191 @@
+{% extends "base.html" %}
+
+{% block title %}Вход - АИС Сервисного отдела{% endblock %}
+
+{% block extra_css %}
+<style>
+    body {
+        background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+        min-height: 100vh;
+    }
+    
+    .login-container {
+        display: flex;
+        min-height: 100vh;
+        align-items: center;
+        justify-content: center;
+        padding: 2rem;
+    }
+    
+    .login-card {
+        max-width: 440px;
+        width: 100%;
+        border: none;
+        border-radius: 16px;
+        box-shadow: 0 20px 60px rgba(30, 64, 175, 0.15);
+        overflow: hidden;
+    }
+    
+    .login-header {
+        background: linear-gradient(135deg, var(--dark-blue) 0%, var(--primary-blue) 100%);
+        padding: 2.5rem 2rem;
+        text-align: center;
+        color: white;
+    }
+    
+    .login-icon {
+        font-size: 3.5rem;
+        margin-bottom: 1rem;
+        display: block;
+    }
+    
+    .login-title {
+        font-size: 1.5rem;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+    }
+    
+    .login-subtitle {
+        opacity: 0.9;
+        font-size: 0.95rem;
+    }
+    
+    .login-body {
+        padding: 2.5rem 2rem;
+        background: white;
+    }
+    
+    .form-label {
+        font-weight: 500;
+        margin-bottom: 0.5rem;
+        color: #475569;
+    }
+    
+    .input-group-text {
+        background-color: #f8fafc;
+        border-color: #e2e8f0;
+        color: #64748b;
+    }
+    
+    .form-control {
+        border-left: 0;
+    }
+    
+    .form-control:focus {
+        border-color: #e2e8f0;
+        box-shadow: none;
+    }
+    
+    .form-control:focus + .input-group-text {
+        border-color: var(--primary-blue);
+    }
+    
+    .btn-login {
+        padding: 0.75rem;
+        font-weight: 500;
+        font-size: 1rem;
+    }
+    
+    .login-footer {
+        text-align: center;
+        padding-top: 1.5rem;
+        border-top: 1px solid #e2e8f0;
+        color: #64748b;
+        font-size: 0.9rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="login-container">
+    <div class="login-card">
+        <div class="login-header">
+            <i class="bi bi-gear-fill login-icon"></i>
+            <div class="login-title">АИС Сервисного отдела</div>
+            <div class="login-subtitle">Автоматизированная информационная система</div>
+        </div>
+        
+        <div class="login-body">
+            <h4 class="text-center mb-4">{{ page_title }}</h4>
+            
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }} alert-dismissible fade show mb-4" role="alert">
+                            <i class="bi bi-{% if category == 'success' %}check-circle{% elif category == 'danger' %}exclamation-triangle{% elif category == 'warning' %}exclamation-circle{% else %}info-circle{% endif %} me-2"></i>
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+            
+            <form method="POST" action="{{ url_for('user.process_login') }}" novalidate>
+                {{ form.hidden_tag() }}
+                
+                <div class="mb-4">
+                    <label for="{{ form.username.id }}" class="form-label">
+                        <i class="bi bi-person me-1"></i>Имя пользователя
+                    </label>
+                    <div class="input-group">
+                        <span class="input-group-text">
+                            <i class="bi bi-person"></i>
+                        </span>
+                        {{ form.username(class="form-control py-2" + (" is-invalid" if form.username.errors else ""), 
+                                       placeholder="Введите имя пользователя") }}
+                    </div>
+                    {% if form.username.errors %}
+                        <div class="invalid-feedback d-block mt-1">
+                            {% for error in form.username.errors %}
+                                <i class="bi bi-exclamation-circle me-1"></i>{{ error }}
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+                
+                <div class="mb-4">
+                    <label for="{{ form.password.id }}" class="form-label">
+                        <i class="bi bi-key me-1"></i>Пароль
+                    </label>
+                    <div class="input-group">
+                        <span class="input-group-text">
+                            <i class="bi bi-lock"></i>
+                        </span>
+                        {{ form.password(class="form-control py-2" + (" is-invalid" if form.password.errors else ""), 
+                                       placeholder="Введите пароль") }}
+                    </div>
+                    {% if form.password.errors %}
+                        <div class="invalid-feedback d-block mt-1">
+                            {% for error in form.password.errors %}
+                                <i class="bi bi-exclamation-circle me-1"></i>{{ error }}
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+                
+                <div class="mb-4">
+                    <div class="form-check">
+                        {{ form.remember_me(class="form-check-input") }}
+                        <label class="form-check-label" for="{{ form.remember_me.id }}">
+                            Запомнить меня
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="d-grid mb-4">
+                    {{ form.submit(class="btn btn-primary btn-login") }}
+                </div>
+            </form>
+            
+            <div class="login-footer">
+                <p class="mb-1">Нет учетной записи?</p>
+                <p class="mb-0">
+                    <a href="#" class="text-primary text-decoration-none fw-medium">
+                        <i class="bi bi-envelope me-1"></i>Обратитесь к администратору
+                    </a>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
