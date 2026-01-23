@@ -1,2 +1,11 @@
-.DS_Store
+config.py
+__pycache__
+.vscode
 env
+.DS_Store
+webapp/.DS_Store
+test.py
+.vscode/
+migrations/
+base_new
+run.sh

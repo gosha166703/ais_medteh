@@ -1,0 +1,383 @@
+{% extends "base.html" %}
+
+{% block title %}{{ page_title }} - АИС Сервисного отдела{% endblock %}
+{% block page_title %}{{ page_title }}{% endblock %}
+
+{% block breadcrumb %}
+<nav aria-label="breadcrumb" class="mt-2">
+    <ol class="breadcrumb" style="background: transparent; padding: 0;">
+        <li class="breadcrumb-item"><a href="{{ url_for('home.index') }}">Главная</a></li>
+        <li class="breadcrumb-item"><a href="{{ url_for('equipment.equipment') }}">Реестр оборудования</a></li>
+        <li class="breadcrumb-item active" aria-current="page">{{ page_title }}</li>
+    </ol>
+</nav>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-lg-10 mx-auto">
+            <div class="card">
+                <div class="card-header">
+                    <div class="d-flex align-items-center">
+                        <div class="icon-shape bg-primary bg-gradient text-white rounded-circle me-3">
+                            <i class="bi bi-{% if equipment %}pencil{% else %}plus-lg{% endif %}"></i>
+                        </div>
+                        <div>
+                            <h3 class="mb-1">{{ page_title }}</h3>
+                            <p class="text-muted mb-0">Заполните все обязательные поля (*)</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card-body">
+                    <form method="POST" novalidate class="needs-validation">
+                        {{ form.hidden_tag() }}
+                        
+                        <!-- Основная информация -->
+                        <div class="mb-5">
+                            <h5 class="text-primary mb-4 d-flex align-items-center">
+                                <i class="bi bi-card-checklist me-2"></i> Основная информация
+                            </h5>
+                            
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label for="{{ form.name.id }}" class="form-label fw-medium">
+                                        <span class="text-danger">*</span> Наименование оборудования
+                                    </label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">
+                                            <i class="bi bi-device-hdd"></i>
+                                        </span>
+                                        {{ form.name(class="form-control" + (" is-invalid" if form.name.errors else ""), 
+                                                   placeholder="Введите наименование оборудования") }}
+                                    </div>
+                                    {% if form.name.errors %}
+                                        <div class="invalid-feedback d-block mt-1">
+                                            {% for error in form.name.errors %}
+                                                <i class="bi bi-exclamation-circle me-1"></i>{{ error }}
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                    <small class="form-text text-muted mt-1">Полное наименование оборудования</small>
+                                </div>
+                                
+                                <div class="col-md-6">
+                                    <label for="{{ form.purpose.id }}" class="form-label fw-medium">Назначение</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">
+                                            <i class="bi bi-info-circle"></i>
+                                        </span>
+                                        {{ form.purpose(class="form-control" + (" is-invalid" if form.purpose.errors else ""), 
+                                                      placeholder="Введите назначение оборудования") }}
+                                    </div>
+                                    {% if form.purpose.errors %}
+                                        <div class="invalid-feedback d-block mt-1">
+                                            {% for error in form.purpose.errors %}
+                                                <i class="bi bi-exclamation-circle me-1"></i>{{ error }}
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                    <small class="form-text text-muted mt-1">Предназначение оборудования</small>
+                                </div>
+                            </div>
+                            
+                            <div class="row g-3 mt-3">
+                                <div class="col-md-6">
+                                    <label for="{{ form.serial_number.id }}" class="form-label fw-medium">Серийный номер</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">
+                                            <i class="bi bi-hash"></i>
+                                        </span>
+                                        {{ form.serial_number(class="form-control" + (" is-invalid" if form.serial_number.errors else ""), 
+                                                             placeholder="Введите серийный номер") }}
+                                    </div>
+                                    {% if form.serial_number.errors %}
+                                        <div class="invalid-feedback d-block mt-1">
+                                            {% for error in form.serial_number.errors %}
+                                                <i class="bi bi-exclamation-circle me-1"></i>{{ error }}
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                
+                                <div class="col-md-6">
+                                    <label for="{{ form.inventory_number.id }}" class="form-label fw-medium">Инвентарный номер</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">
+                                            <i class="bi bi-tag"></i>
+                                        </span>
+                                        {{ form.inventory_number(class="form-control" + (" is-invalid" if form.inventory_number.errors else ""), 
+                                                               placeholder="Введите инвентарный номер") }}
+                                    </div>
+                                    {% if form.inventory_number.errors %}
+                                        <div class="invalid-feedback d-block mt-1">
+                                            {% for error in form.inventory_number.errors %}
+                                                <i class="bi bi-exclamation-circle me-1"></i>{{ error }}
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            
+                            <div class="row g-3 mt-3">
+                                <div class="col-md-6">
+                                    <label for="{{ form.model.id }}" class="form-label fw-medium">Модель</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">
+                                            <i class="bi bi-gear"></i>
+                                        </span>
+                                        {{ form.model(class="form-control" + (" is-invalid" if form.model.errors else ""), 
+                                                     placeholder="Введите модель оборудования") }}
+                                    </div>
+                                    {% if form.model.errors %}
+                                        <div class="invalid-feedback d-block mt-1">
+                                            {% for error in form.model.errors %}
+                                                <i class="bi bi-exclamation-circle me-1"></i>{{ error }}
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                
+                                <div class="col-md-6">
+                                    <label for="{{ form.manufacturer.id }}" class="form-label fw-medium">Производитель</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">
+                                            <i class="bi bi-building"></i>
+                                        </span>
+                                        {{ form.manufacturer(class="form-control" + (" is-invalid" if form.manufacturer.errors else ""), 
+                                                           placeholder="Введите производителя") }}
+                                    </div>
+                                    {% if form.manufacturer.errors %}
+                                        <div class="invalid-feedback d-block mt-1">
+                                            {% for error in form.manufacturer.errors %}
+                                                <i class="bi bi-exclamation-circle me-1"></i>{{ error }}
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Даты и статусы -->
+                        <div class="mb-5">
+                            <h5 class="text-primary mb-4 d-flex align-items-center">
+                                <i class="bi bi-calendar-check me-2"></i> Даты и статусы
+                            </h5>
+                            
+                            <div class="row g-3">
+                                <!-- <div class="col-md-6">
+                                    <label for="{{ form.date_entry.id }}" class="form-label fw-medium">Дата ввода в эксплуатацию</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">
+                                            <i class="bi bi-calendar-plus"></i>
+                                        </span>
+                                        {{ form.date_entry(class="form-control" + (" is-invalid" if form.date_entry.errors else ""), 
+                                                         placeholder="ГГГГ-ММ-ДД", type="date") }}
+                                    </div>
+                                    {% if form.date_entry.errors %}
+                                        <div class="invalid-feedback d-block mt-1">
+                                            {% for error in form.date_entry.errors %}
+                                                <i class="bi bi-exclamation-circle me-1"></i>{{ error }}
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                    <small class="form-text text-muted mt-1">Формат: ГГГГ-ММ-ДД</small>
+                                </div> -->
+                                
+                                <div class="col-md-6">
+                                    <label for="{{ form.last_maintenance.id }}" class="form-label fw-medium">Дата последнего ТО</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">
+                                            <i class="bi bi-calendar-check"></i>
+                                        </span>
+                                        {{ form.last_maintenance(class="form-control" + (" is-invalid" if form.last_maintenance.errors else ""), 
+                                                               placeholder="ГГГГ-ММ-ДД", type="date") }}
+                                    </div>
+                                    {% if form.last_maintenance.errors %}
+                                        <div class="invalid-feedback d-block mt-1">
+                                            {% for error in form.last_maintenance.errors %}
+                                                <i class="bi bi-exclamation-circle me-1"></i>{{ error }}
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                    <small class="form-text text-muted mt-1">Формат: ГГГГ-ММ-ДД</small>
+                                </div>
+                            </div>
+                            <!-- <div class="col-md-6">
+                                <label for="{{ form.time_work.id }}" class="form-label fw-medium">Время наработки</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">
+                                        <i class="bi bi-clock"></i>
+                                    </span>
+                                    {{ form.time_work(class="form-control" + (" is-invalid" if form.time_work.errors else ""), 
+                                                    placeholder="ЧЧ:ММ:СС или дни.ЧЧ:ММ:СС") }}
+                                </div>
+                                {% if form.time_work.errors %}
+                                    <div class="invalid-feedback d-block mt-1">
+                                        {% for error in form.time_work.errors %}
+                                            <i class="bi bi-exclamation-circle me-1"></i>{{ error }}
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                                <small class="form-text text-muted mt-1">
+                                    Формат: дни.ЧЧ:ММ:СС или ЧЧ:ММ:СС (например: 1.12:30:00 или 36:30:00)
+                                </small>
+                            </div> -->
+                        </div>
+                        
+                        <div class="row g-3 mt-3">
+                            <!-- <div class="col-md-6">
+                                <label for="{{ form.downtime.id }}" class="form-label fw-medium">Время простоя</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">
+                                        <i class="bi bi-clock-history"></i>
+                                    </span>
+                                    {{ form.downtime(class="form-control" + (" is-invalid" if form.downtime.errors else ""), 
+                                                placeholder="ЧЧ:ММ:СС или дни.ЧЧ:ММ:СС") }}
+                                </div>
+                                {% if form.downtime.errors %}
+                                    <div class="invalid-feedback d-block mt-1">
+                                        {% for error in form.downtime.errors %}
+                                            <i class="bi bi-exclamation-circle me-1"></i>{{ error }}
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                                <small class="form-text text-muted mt-1">
+                                    Формат: дни.ЧЧ:ММ:СС или ЧЧ:ММ:СС (например: 0.02:15:00 или 02:15:00)
+                                </small>
+                            </div>         -->
+                            <div class="row g-3 mt-3">
+                                <div class="col-md-6">
+                                    <label for="{{ form.status.id }}" class="form-label fw-medium">
+                                        <span class="text-danger">*</span> Статус
+                                    </label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">
+                                            <i class="bi bi-circle-fill"></i>
+                                        </span>
+                                        {{ form.status(class="form-select" + (" is-invalid" if form.status.errors else "")) }}
+                                    </div>
+                                    {% if form.status.errors %}
+                                        <div class="invalid-feedback d-block mt-1">
+                                            {% for error in form.status.errors %}
+                                                <i class="bi bi-exclamation-circle me-1"></i>{{ error }}
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                
+                                <div class="col-md-6">
+                                    <div class="mt-4 pt-2">
+                                        <div class="form-check form-switch">
+                                            {{ form.write_off(class="form-check-input", role="switch") }}
+                                            <label class="form-check-label fw-medium" for="{{ form.write_off.id }}">
+                                                Оборудование списано
+                                            </label>
+                                        </div>
+                                        {% if form.write_off.errors %}
+                                            <div class="invalid-feedback d-block mt-1">
+                                                {% for error in form.write_off.errors %}
+                                                    <i class="bi bi-exclamation-circle me-1"></i>{{ error }}
+                                                {% endfor %}
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Кнопки -->
+                        <div class="d-flex justify-content-between mt-5 pt-4 border-top">
+                            <a href="{{ url_for('equipment.equipment') }}" class="btn btn-secondary">
+                                <i class="bi bi-arrow-left me-2"></i> Отмена
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                {% if equipment %}
+                                    <i class="bi bi-check-circle me-2"></i> Сохранить изменения
+                                {% else %}
+                                    <i class="bi bi-plus-circle me-2"></i> Создать оборудование
+                                {% endif %}
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .icon-shape {
+        width: 48px;
+        height: 48px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .form-label {
+        color: #475569;
+        margin-bottom: 0.5rem;
+    }
+    
+    .input-group-text {
+        background-color: #f8fafc;
+        border-color: #e2e8f0;
+        color: #64748b;
+        min-width: 45px;
+        justify-content: center;
+    }
+    
+    .form-control:focus,
+    .form-select:focus {
+        border-color: var(--primary-blue);
+        box-shadow: 0 0 0 0.25rem rgba(30, 64, 175, 0.15);
+    }
+    
+    .form-check-input:checked {
+        background-color: var(--primary-blue);
+        border-color: var(--primary-blue);
+    }
+    
+    .form-check-input:focus {
+        border-color: var(--primary-blue);
+        box-shadow: 0 0 0 0.25rem rgba(30, 64, 175, 0.25);
+    }
+    
+    .form-switch .form-check-input {
+        width: 3em;
+        height: 1.5em;
+    }
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Устанавливаем максимальную дату как сегодня для полей дат
+    const today = new Date().toISOString().split('T')[0];
+    const dateFields = document.querySelectorAll('input[type="date"]');
+    
+    dateFields.forEach(field => {
+        field.max = today;
+        
+        // Добавляем красивый календарь
+        field.addEventListener('focus', function() {
+            this.showPicker && this.showPicker();
+        });
+    });
+    
+    // Валидация формы
+    const forms = document.querySelectorAll('.needs-validation');
+    
+    Array.from(forms).forEach(form => {
+        form.addEventListener('submit', event => {
+            if (!form.checkValidity()) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
+            form.classList.add('was-validated');
+        }, false);
+    });
+});
+</script>
+{% endblock %}
