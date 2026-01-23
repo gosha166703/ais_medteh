@@ -1,0 +1,332 @@
+{% extends "base.html" %}
+
+{% block title %}Регистрация - АИС Сервисного отдела{% endblock %}
+
+{% block extra_css %}
+<style>
+    body {
+        background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+        min-height: 100vh;
+    }
+    
+    .registration-container {
+        display: flex;
+        min-height: 100vh;
+        align-items: center;
+        justify-content: center;
+        padding: 2rem;
+    }
+    
+    .registration-card {
+        max-width: 480px;
+        width: 100%;
+        border: none;
+        border-radius: 16px;
+        box-shadow: 0 20px 60px rgba(30, 64, 175, 0.15);
+        overflow: hidden;
+    }
+    
+    .registration-header {
+        background: linear-gradient(135deg, var(--dark-blue) 0%, var(--primary-blue) 100%);
+        padding: 2.5rem 2rem;
+        text-align: center;
+        color: white;
+    }
+    
+    .registration-icon {
+        font-size: 3.5rem;
+        margin-bottom: 1rem;
+        display: block;
+    }
+    
+    .registration-title {
+        font-size: 1.5rem;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+    }
+    
+    .registration-subtitle {
+        opacity: 0.9;
+        font-size: 0.95rem;
+    }
+    
+    .registration-body {
+        padding: 2.5rem 2rem;
+        background: white;
+    }
+    
+    .form-label {
+        font-weight: 500;
+        margin-bottom: 0.5rem;
+        color: #475569;
+    }
+    
+    .input-group-text {
+        background-color: #f8fafc;
+        border-color: #e2e8f0;
+        color: #64748b;
+    }
+    
+    .form-control {
+        border-left: 0;
+    }
+    
+    .form-control:focus {
+        border-color: #e2e8f0;
+        box-shadow: none;
+    }
+    
+    .form-control:focus + .input-group-text {
+        border-color: var(--primary-blue);
+    }
+    
+    .password-requirements {
+        background-color: #f8fafc;
+        border-radius: 8px;
+        padding: 1rem;
+        margin-top: 0.5rem;
+        font-size: 0.85rem;
+        color: #64748b;
+    }
+    
+    .password-requirements ul {
+        margin-bottom: 0;
+        padding-left: 1.2rem;
+    }
+    
+    .btn-register {
+        padding: 0.75rem;
+        font-weight: 500;
+        font-size: 1rem;
+    }
+    
+    .registration-footer {
+        text-align: center;
+        padding-top: 1.5rem;
+        border-top: 1px solid #e2e8f0;
+        color: #64748b;
+        font-size: 0.9rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="registration-container">
+    <div class="registration-card">
+        <div class="registration-header">
+            <i class="bi bi-person-plus-fill registration-icon"></i>
+            <div class="registration-title">Регистрация в системе</div>
+            <div class="registration-subtitle">Создайте новую учетную запись</div>
+        </div>
+        
+        <div class="registration-body">
+            <h4 class="text-center mb-4">{{ page_title }}</h4>
+            
+            <!-- Flash сообщения -->
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }} alert-dismissible fade show mb-4" role="alert">
+                            <i class="bi bi-{% if category == 'success' %}check-circle{% elif category == 'danger' %}exclamation-triangle{% elif category == 'warning' %}exclamation-circle{% else %}info-circle{% endif %} me-2"></i>
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+            
+            <!-- Начало формы регистрации -->
+            <form method="POST" action="{{ url_for('user.process_reg') }}" novalidate>
+                {{ form.hidden_tag() }}
+                
+                <!-- Поле: username -->
+                <!-- АТРИБУТ ИЗ FormRegistration: username -->
+                <div class="mb-4">
+                    <label for="{{ form.username.id }}" class="form-label">
+                        <i class="bi bi-person-circle me-1"></i>Имя пользователя
+                    </label>
+                    <div class="input-group">
+                        <span class="input-group-text">
+                            <i class="bi bi-person-badge"></i>
+                        </span>
+                        {{ form.username(class="form-control py-2" + (" is-invalid" if form.username.errors else ""), 
+                                       placeholder="Введите имя пользователя") }}
+                    </div>
+                    {% if form.username.errors %}
+                        <div class="invalid-feedback d-block mt-1">
+                            {% for error in form.username.errors %}
+                                <i class="bi bi-exclamation-circle me-1"></i>{{ error }}
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+                <div class="mb-4">
+                    <label for="{{ form.lastname.id }}" class="form-label">
+                        <i class="bi bi-person-circle me-1"></i>Фамилия пользователя
+                    </label>
+                    <div class="input-group">
+                        <span class="input-group-text">
+                            <i class="bi bi-person-badge"></i>
+                        </span>
+                        {{ form.lastname(class="form-control py-2" + (" is-invalid" if form.lastname.errors else ""), 
+                                       placeholder="Введите фамилию пользователя") }}
+                    </div>
+                    {% if form.lastname.errors %}
+                        <div class="invalid-feedback d-block mt-1">
+                            {% for error in form.lastname.errors %}
+                                <i class="bi bi-exclamation-circle me-1"></i>{{ error }}
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+                
+                <!-- Поле: email -->
+                <!-- АТРИБУТ ИЗ FormRegistration: email -->
+                <div class="mb-4">
+                    <label for="{{ form.email.id }}" class="form-label">
+                        <i class="bi bi-envelope me-1"></i>Электронная почта
+                    </label>
+                    <div class="input-group">
+                        <span class="input-group-text">
+                            <i class="bi bi-at"></i>
+                        </span>
+                        {{ form.email(class="form-control py-2" + (" is-invalid" if form.email.errors else ""), 
+                                     placeholder="example@company.ru") }}
+                    </div>
+                    {% if form.email.errors %}
+                        <div class="invalid-feedback d-block mt-1">
+                            {% for error in form.email.errors %}
+                                <i class="bi bi-exclamation-circle me-1"></i>{{ error }}
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+                
+                <!-- Поле: password -->
+                <!-- АТРИБУТ ИЗ FormRegistration: password -->
+                <div class="mb-4">
+                    <label for="{{ form.password.id }}" class="form-label">
+                        <i class="bi bi-key me-1"></i>Пароль
+                    </label>
+                    <div class="input-group">
+                        <span class="input-group-text">
+                            <i class="bi bi-lock"></i>
+                        </span>
+                        {{ form.password(class="form-control py-2" + (" is-invalid" if form.password.errors else ""), 
+                                       placeholder="Введите пароль") }}
+                    </div>
+                    {% if form.password.errors %}
+                        <div class="invalid-feedback d-block mt-1">
+                            {% for error in form.password.errors %}
+                                <i class="bi bi-exclamation-circle me-1"></i>{{ error }}
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                    <!-- Подсказка для пароля -->
+                    <div class="password-requirements mt-2">
+                        <small>Пароль должен содержать:</small>
+                        <ul>
+                            <li>Не менее 8 символов</li>
+                            <li>Буквы в разных регистрах</li>
+                            <li>Цифры или специальные символы</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <!-- Поле: password2 (подтверждение) -->
+                <!-- АТРИБУТ ИЗ FormRegistration: password2 -->
+                <div class="mb-4">
+                    <label for="{{ form.password2.id }}" class="form-label">
+                        <i class="bi bi-key-fill me-1"></i>Подтверждение пароля
+                    </label>
+                    <div class="input-group">
+                        <span class="input-group-text">
+                            <i class="bi bi-lock-fill"></i>
+                        </span>
+                        {{ form.password2(class="form-control py-2" + (" is-invalid" if form.password2.errors else ""), 
+                                         placeholder="Повторите пароль") }}
+                    </div>
+                    {% if form.password2.errors %}
+                        <div class="invalid-feedback d-block mt-1">
+                            {% for error in form.password2.errors %}
+                                <i class="bi bi-exclamation-circle me-1"></i>{{ error }}
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+                
+                <!-- Кнопка submit -->
+                <!-- АТРИБУТ ИЗ FormRegistration: submit -->
+                <div class="d-grid mb-4">
+                    {{ form.submit(class="btn btn-primary btn-register") }}
+                </div>
+            </form>
+            <!-- Конец формы регистрации -->
+            
+            <div class="registration-footer">
+                <p class="mb-1">Уже есть учетная запись?</p>
+                <p class="mb-0">
+                    <a href="{{ url_for('user.login') }}" class="text-primary text-decoration-none fw-medium">
+                        <i class="bi bi-box-arrow-in-right me-1"></i>Войти в систему
+                    </a>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // JavaScript для улучшения UX формы регистрации
+    
+    document.addEventListener('DOMContentLoaded', function() {
+        // Показывать/скрывать требования к паролю при фокусе
+        const passwordField = document.getElementById('{{ form.password.id }}');
+        const passwordRequirements = document.querySelector('.password-requirements');
+        
+        if (passwordField && passwordRequirements) {
+            passwordField.addEventListener('focus', function() {
+                passwordRequirements.style.display = 'block';
+            });
+            
+            passwordField.addEventListener('blur', function() {
+                setTimeout(() => {
+                    if (document.activeElement !== passwordField && 
+                        document.activeElement !== document.getElementById('{{ form.password2.id }}')) {
+                        passwordRequirements.style.display = 'none';
+                    }
+                }, 200);
+            });
+            
+            // Скрываем по умолчанию
+            passwordRequirements.style.display = 'none';
+        }
+        
+        // Проверка совпадения паролей в реальном времени
+        const password2Field = document.getElementById('{{ form.password2.id }}');
+        
+        if (passwordField && password2Field) {
+            function checkPasswordMatch() {
+                const password = passwordField.value;
+                const password2 = password2Field.value;
+                
+                if (password2.length > 0) {
+                    if (password === password2) {
+                        password2Field.classList.remove('is-invalid');
+                        password2Field.classList.add('is-valid');
+                    } else {
+                        password2Field.classList.remove('is-valid');
+                        password2Field.classList.add('is-invalid');
+                    }
+                } else {
+                    password2Field.classList.remove('is-valid', 'is-invalid');
+                }
+            }
+            
+            passwordField.addEventListener('input', checkPasswordMatch);
+            password2Field.addEventListener('input', checkPasswordMatch);
+        }
+    });
+</script>
+{% endblock %}

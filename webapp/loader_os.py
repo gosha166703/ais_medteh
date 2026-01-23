@@ -1,5 +1,6 @@
 # Загрузчик основных средств в реестр основных средств
 import csv, sys, os
+from datetime import datetime
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
@@ -18,11 +19,16 @@ def read_csv(filname):
             "Дата принятия к учету"
         ]
         reader = csv.DictReader(f, fields, delimiter=";")
+        next(reader, None)
         for row in reader:
             save_equipment_data(row)
 
 #Сохранение значений из файла в базу данных
 def save_equipment_data(row):
+    format_string = "%d.%m.%Y"
+    row["Дата принятия к учету"] = datetime.strptime(row["Дата принятия к учету"], format_string)
+
+
     equipment=Equipment(
         name=row["Основное средство"],
         inventory_number=row["Инвентарный номер"],

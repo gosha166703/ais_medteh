@@ -19,8 +19,8 @@ class Equipment(Base):
     write_off:Mapped[bool] = mapped_column(Boolean, default=False)
     model:Mapped[Optional[str]] = mapped_column(String(1000), nullable=True) #ToDo: Справочник моделей создать
     manufacturer:Mapped[Optional[str]] = mapped_column(String(1000), nullable=True)
-    time_work:Mapped[timedelta] = mapped_column(Interval, default=lambda: timedelta(0)) 
-    downtime:Mapped[timedelta] = mapped_column(Interval, default=lambda: timedelta(0))
+    # time_work:Mapped[timedelta] = mapped_column(Interval, default=lambda: timedelta(0)) 
+    # downtime:Mapped[timedelta] = mapped_column(Interval, default=lambda: timedelta(0))
     last_maintenance:Mapped[Optional[datetime]] = mapped_column(DateTime, nullable=True)
     created_at:Mapped[datetime] = mapped_column(DateTime(timezone=True), 
                                                default=lambda: datetime.now(timezone.utc))

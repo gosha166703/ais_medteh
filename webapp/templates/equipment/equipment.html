@@ -17,24 +17,189 @@
     <!-- Фильтры и поиск -->
     <div class="card mb-4">
         <div class="card-body">
-            <div class="row g-3">
-                <div class="col-md-6">
-                    <div class="input-group">
-                        <span class="input-group-text">
-                            <i class="bi bi-search"></i>
-                        </span>
-                        <input type="text" class="form-control" placeholder="Поиск по названию или инв. номеру...">
-                        <button class="btn btn-outline-secondary" type="button">
-                            <i class="bi bi-filter"></i> Фильтр
-                        </button>
+            <form method="GET" action="{{ url_for('equipment.equipment') }}" id="filterForm">
+                <div class="row g-3">
+                    <!-- Строка 1: Поиск и кнопки -->
+                    <div class="col-md-8">
+                        <div class="input-group">
+                            <span class="input-group-text">
+                                <i class="bi bi-search"></i>
+                            </span>
+                            <input type="text" 
+                                   class="form-control" 
+                                   name="search" 
+                                   placeholder="Поиск по названию, инв. номеру или серийному номеру..."
+                                   value="{{ search_query }}">
+                            <button type="button" 
+                                    class="btn btn-outline-secondary" 
+                                    data-bs-toggle="collapse" 
+                                    data-bs-target="#advancedFilters"
+                                    aria-expanded="false" 
+                                    aria-controls="advancedFilters">
+                                <i class="bi bi-filter me-1"></i> Фильтр
+                            </button>
+                        </div>
+                    </div>
+                    <div class="col-md-4 text-end">
+                        <div class="d-flex gap-2 justify-content-end">
+                            <a href="{{ url_for('equipment.create_equipment') }}" class="btn btn-primary">
+                                <i class="bi bi-plus-circle me-2"></i> Добавить
+                            </a>
+                            <button type="submit" class="btn btn-success">
+                                <i class="bi bi-search me-2"></i> Найти
+                            </button>
+                            {% if search_query or model_filter or manufacturer_filter or status_filter or date_from or date_to %}
+                            <a href="{{ url_for('equipment.equipment') }}" class="btn btn-outline-secondary">
+                                <i class="bi bi-x-circle me-2"></i> Сбросить
+                            </a>
+                            {% endif %}
+                        </div>
                     </div>
                 </div>
-                <div class="col-md-6 text-end">
-                    <a href="{{ url_for('equipment.create_equipment') }}" class="btn btn-primary">
-                        <i class="bi bi-plus-circle me-2"></i> Добавить оборудование
-                    </a>
+
+                <!-- Расширенный фильтр (скрытый по умолчанию) -->
+                <div class="collapse mt-3" id="advancedFilters">
+                    <div class="card card-body border-0 bg-light">
+                        <h6 class="mb-3"><i class="bi bi-sliders me-2"></i>Расширенный фильтр</h6>
+                        <div class="row g-3">
+                            <!-- Модель -->
+                            <div class="col-md-6 col-lg-3">
+                                <label class="form-label small text-muted mb-1">Модель</label>
+                                <select class="form-select form-select-sm" name="model">
+                                    <option value="">Все модели</option>
+                                    {% for model in models %}
+                                    <option value="{{ model }}" {% if model_filter == model %}selected{% endif %}>
+                                        {{ model }}
+                                    </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            
+                            <!-- Производитель -->
+                            <div class="col-md-6 col-lg-3">
+                                <label class="form-label small text-muted mb-1">Производитель</label>
+                                <select class="form-select form-select-sm" name="manufacturer">
+                                    <option value="">Все производители</option>
+                                    {% for manufacturer in manufacturers %}
+                                    <option value="{{ manufacturer }}" {% if manufacturer_filter == manufacturer %}selected{% endif %}>
+                                        {{ manufacturer }}
+                                    </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            
+                            <!-- Статус -->
+                            <div class="col-md-6 col-lg-3">
+                                <label class="form-label small text-muted mb-1">Статус</label>
+                                <select class="form-select form-select-sm" name="status">
+                                    <option value="">Все статусы</option>
+                                    {% for status in statuses %}
+                                    <option value="{{ status }}" {% if status_filter == status %}selected{% endif %}>
+                                        {{ status_names.get(status, status) }}
+                                    </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            
+                            <!-- Диапазон дат -->
+                            <div class="col-md-6 col-lg-3">
+                                <label class="form-label small text-muted mb-1">Дата поступления</label>
+                                <div class="input-group input-group-sm">
+                                    <input type="date" 
+                                           class="form-control" 
+                                           name="date_from" 
+                                           placeholder="С"
+                                           value="{{ date_from }}">
+                                    <span class="input-group-text">—</span>
+                                    <input type="date" 
+                                           class="form-control" 
+                                           name="date_to" 
+                                           placeholder="По"
+                                           value="{{ date_to }}">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Информация о фильтрах -->
+                        {% if search_query or model_filter or manufacturer_filter or status_filter or date_from or date_to %}
+                        <div class="mt-3 pt-3 border-top">
+                            <div class="d-flex flex-wrap gap-2 align-items-center">
+                                <small class="text-muted">Активные фильтры:</small>
+                                {% if search_query %}
+                                <span class="badge bg-primary bg-opacity-10 text-primary border border-primary border-opacity-25">
+                                    Поиск: "{{ search_query }}"
+                                    <a href="{{ url_for('equipment.equipment', 
+                                        model=model_filter,
+                                        manufacturer=manufacturer_filter,
+                                        status=status_filter,
+                                        date_from=date_from,
+                                        date_to=date_to) }}" 
+                                       class="text-decoration-none ms-1">
+                                        <i class="bi bi-x"></i>
+                                    </a>
+                                </span>
+                                {% endif %}
+                                {% if model_filter %}
+                                <span class="badge bg-info bg-opacity-10 text-info border border-info border-opacity-25">
+                                    Модель: {{ model_filter }}
+                                    <a href="{{ url_for('equipment.equipment', 
+                                        search=search_query,
+                                        manufacturer=manufacturer_filter,
+                                        status=status_filter,
+                                        date_from=date_from,
+                                        date_to=date_to) }}" 
+                                       class="text-decoration-none ms-1">
+                                        <i class="bi bi-x"></i>
+                                    </a>
+                                </span>
+                                {% endif %}
+                                {% if manufacturer_filter %}
+                                <span class="badge bg-warning bg-opacity-10 text-warning border border-warning border-opacity-25">
+                                    Производитель: {{ manufacturer_filter }}
+                                    <a href="{{ url_for('equipment.equipment', 
+                                        search=search_query,
+                                        model=model_filter,
+                                        status=status_filter,
+                                        date_from=date_from,
+                                        date_to=date_to) }}" 
+                                       class="text-decoration-none ms-1">
+                                        <i class="bi bi-x"></i>
+                                    </a>
+                                </span>
+                                {% endif %}
+                                {% if status_filter %}
+                                <span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25">
+                                    Статус: {{ status_names.get(status_filter, status_filter) }}
+                                    <a href="{{ url_for('equipment.equipment', 
+                                        search=search_query,
+                                        model=model_filter,
+                                        manufacturer=manufacturer_filter,
+                                        date_from=date_from,
+                                        date_to=date_to) }}" 
+                                       class="text-decoration-none ms-1">
+                                        <i class="bi bi-x"></i>
+                                    </a>
+                                </span>
+                                {% endif %}
+                                {% if date_from or date_to %}
+                                <span class="badge bg-secondary bg-opacity-10 text-secondary border border-secondary border-opacity-25">
+                                    Дата: {{ date_from if date_from else '...' }} — {{ date_to if date_to else '...' }}
+                                    <a href="{{ url_for('equipment.equipment', 
+                                        search=search_query,
+                                        model=model_filter,
+                                        manufacturer=manufacturer_filter,
+                                        status=status_filter) }}" 
+                                       class="text-decoration-none ms-1">
+                                        <i class="bi bi-x"></i>
+                                    </a>
+                                </span>
+                                {% endif %}
+                            </div>
+                        </div>
+                        {% endif %}
+                    </div>
                 </div>
-            </div>
+            </form>
         </div>
     </div>
 
@@ -72,7 +237,9 @@
                         <tbody>
                             {% for item in equipment_list %}
                             <tr>
-                                <td class="fw-semibold text-primary">{{ item.inventory_number }}</td>
+                                <td class="fw-semibold text-primary">
+                                    {{ item.inventory_number if item.inventory_number else "Не указан" }}
+                                </td>
                                 <td>
                                     <div class="d-flex align-items-start">
                                         <div class="me-2 mt-1">
@@ -80,12 +247,12 @@
                                         </div>
                                         <div>
                                             <div class="fw-medium">{{ item.name }}</div>
-                                            <small class="text-muted">{{ item.serial_number|default('Серийный номер не указан') }}</small>
+                                            <small class="text-muted">{{ item.serial_number|default('Серийный номер не указан', true) }}</small>
                                         </div>
                                     </div>
                                 </td>
-                                <td>{{ item.model }}</td>
-                                <td>{{ item.manufacturer }}</td>
+                                <td>{{ item.model|default('Не указана', true) }}</td>
+                                <td>{{ item.manufacturer|default('Не указан', true) }}</td>
                                 <td>
                                     {% if item.status == 'active' %}
                                     <span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25">
@@ -99,84 +266,62 @@
                                     <span class="badge bg-warning bg-opacity-10 text-warning border border-warning border-opacity-25">
                                         <i class="bi bi-tools me-1"></i>На ремонте
                                     </span>
-                                    {% else %}
+                                    {% elif item.status == 'not_active' %}
                                     <span class="badge bg-danger bg-opacity-10 text-danger border border-danger border-opacity-25">
-                                        <i class="bi bi-x-circle me-1"></i>Списано
+                                        <i class="bi bi-x-circle me-1"></i>Не исправно
                                     </span>
+                                    {% elif item.write_off %}
+                                    <span class="badge bg-dark bg-opacity-10 text-dark border border-dark border-opacity-25">
+                                        <i class="bi bi-archive me-1"></i>Списано
+                                    </span>
+                                    {% else %}
+                                    <span class="badge bg-secondary bg-opacity-10 text-secondary border border-secondary border-opacity-25">
+                                        <i class="bi bi-question-circle me-1"></i>Неизвестно
+                                    </span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if item.date_entry %}
+                                        {{ item.date_entry.strftime('%Y-%m-%d') }}
+                                    {% else %}
+                                         <span class="text-muted">Не указана</span>
                                     {% endif %}
                                 </td>
                                 <td class="text-end">
                                     <div class="btn-group btn-group-sm" role="group">
+                                        {# Кнопка просмотра - всегда доступна #}
                                         <a href="{{ url_for('equipment.equipment_detail', id=item.id) }}" 
                                            class="btn btn-outline-primary" 
                                            title="Просмотр карточки"
                                            data-bs-toggle="tooltip">
                                             <i class="bi bi-eye"></i>
                                         </a>
+                                        
+                                        {# Кнопка редактирования - только для авторизованных #}
+                                        {% if current_user.is_authenticated %}
                                         <a href="{{ url_for('equipment.equipment_edit', id=item.id) }}" 
                                            class="btn btn-outline-warning" 
                                            title="Редактировать"
                                            data-bs-toggle="tooltip">
                                             <i class="bi bi-pencil"></i>
                                         </a>
+                                        {% endif %}
+                                        
+                                        {# Кнопка удаления - только для администраторов #}
+                                        {% if current_user.is_authenticated and current_user.is_admin %}
                                         <button type="button" 
-                                                class="btn btn-outline-danger"
-                                                data-bs-toggle="modal" 
-                                                data-bs-target="#deleteModal{{ item.id }}"
-                                                title="Удалить"
-                                                data-bs-toggle="tooltip">
+                                                class="btn btn-outline-danger delete-btn"
+                                                data-id="{{ item.id }}"
+                                                data-name="{{ item.name }}"
+                                                data-inventory="{{ item.inventory_number if item.inventory_number else 'Не указан' }}"
+                                                data-model="{{ item.model if item.model else 'Не указана' }}"
+                                                title="Удалить">
                                             <i class="bi bi-trash"></i>
                                         </button>
+                                        {% endif %}
                                     </div>
                                 </td>
                             </tr>
-                            
-                            <!-- Модальное окно удаления -->
-                            <div class="modal fade" id="deleteModal{{ item.id }}" tabindex="-1">
-                                <div class="modal-dialog modal-dialog-centered">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title">Подтверждение удаления</h5>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                                        </div>
-                                        <div class="modal-body">
-                                            <div class="alert alert-warning border-0">
-                                                <div class="d-flex">
-                                                    <i class="bi bi-exclamation-triangle fs-4 me-3"></i>
-                                                    <div>
-                                                        <strong>Внимание!</strong> Это действие нельзя отменить. Все данные об оборудовании будут удалены.
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <p class="mb-3">Вы уверены, что хотите удалить оборудование?</p>
-                                            <div class="card bg-light border-0">
-                                                <div class="card-body">
-                                                    <div class="d-flex align-items-center">
-                                                        <div class="me-3">
-                                                            <i class="bi bi-device-hdd fs-4 text-primary"></i>
-                                                        </div>
-                                                        <div>
-                                                            <strong>{{ item.name }}</strong>
-                                                            <div class="text-muted small">
-                                                                Инв. №: {{ item.inventory_number }} • 
-                                                                Модель: {{ item.model }}
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
-                                            <form action="{{ url_for('equipment.delete_equipment', id=item.id) }}" method="POST" class="d-inline">
-                                                <button type="submit" class="btn btn-danger">
-                                                    <i class="bi bi-trash me-1"></i> Удалить
-                                                </button>
-                                            </form>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
                             {% endfor %}
                         </tbody>
                     </table>
@@ -185,26 +330,104 @@
             <div class="card-footer bg-transparent">
                 <div class="d-flex justify-content-between align-items-center">
                     <div>
-                        <span class="text-muted">Показано {{ equipment_list|length }} записей</span>
+                        <span class="text-muted">
+                            Показано {{ ((current_page - 1) * items_per_page) + 1 }}-{{ [current_page * items_per_page, total_count]|min }} из {{ total_count }} записей
+                            {% if search_query or model_filter or manufacturer_filter or status_filter or date_from or date_to %}
+                            <span class="text-primary">(отфильтровано)</span>
+                            {% endif %}
+                        </span>
                     </div>
                     <div>
+                        {% if total_pages > 1 %}
                         <nav aria-label="Навигация по страницам">
                             <ul class="pagination pagination-sm mb-0">
-                                <li class="page-item disabled">
-                                    <a class="page-link" href="#" tabindex="-1">
+                                {# Кнопка "Назад" #}
+                                <li class="page-item {% if current_page == 1 %}disabled{% endif %}">
+                                    <a class="page-link" 
+                                       href="{% if current_page > 1 %}{{ url_for('equipment.equipment', 
+                                           page=current_page-1,
+                                           search=search_query,
+                                           model=model_filter,
+                                           manufacturer=manufacturer_filter,
+                                           status=status_filter,
+                                           date_from=date_from,
+                                           date_to=date_to) }}{% else %}#{% endif %}">
                                         <i class="bi bi-chevron-left"></i>
                                     </a>
                                 </li>
-                                <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                                <li class="page-item"><a class="page-link" href="#">2</a></li>
-                                <li class="page-item"><a class="page-link" href="#">3</a></li>
+                                
+                                {# Первая страница #}
+                                {% if start_page > 1 %}
                                 <li class="page-item">
-                                    <a class="page-link" href="#">
+                                    <a class="page-link" 
+                                       href="{{ url_for('equipment.equipment', 
+                                           page=1,
+                                           search=search_query,
+                                           model=model_filter,
+                                           manufacturer=manufacturer_filter,
+                                           status=status_filter,
+                                           date_from=date_from,
+                                           date_to=date_to) }}">1</a>
+                                </li>
+                                {% if start_page > 2 %}
+                                <li class="page-item disabled">
+                                    <span class="page-link">...</span>
+                                </li>
+                                {% endif %}
+                                {% endif %}
+                                
+                                {# Диапазон страниц #}
+                                {% for p in range(start_page, end_page + 1) %}
+                                <li class="page-item {% if p == current_page %}active{% endif %}">
+                                    <a class="page-link" 
+                                       href="{{ url_for('equipment.equipment', 
+                                           page=p,
+                                           search=search_query,
+                                           model=model_filter,
+                                           manufacturer=manufacturer_filter,
+                                           status=status_filter,
+                                           date_from=date_from,
+                                           date_to=date_to) }}">{{ p }}</a>
+                                </li>
+                                {% endfor %}
+                                
+                                {# Последняя страница #}
+                                {% if end_page < total_pages %}
+                                {% if end_page < total_pages - 1 %}
+                                <li class="page-item disabled">
+                                    <span class="page-link">...</span>
+                                </li>
+                                {% endif %}
+                                <li class="page-item">
+                                    <a class="page-link" 
+                                       href="{{ url_for('equipment.equipment', 
+                                           page=total_pages,
+                                           search=search_query,
+                                           model=model_filter,
+                                           manufacturer=manufacturer_filter,
+                                           status=status_filter,
+                                           date_from=date_from,
+                                           date_to=date_to) }}">{{ total_pages }}</a>
+                                </li>
+                                {% endif %}
+                                
+                                {# Кнопка "Вперед" #}
+                                <li class="page-item {% if current_page == total_pages %}disabled{% endif %}">
+                                    <a class="page-link" 
+                                       href="{% if current_page < total_pages %}{{ url_for('equipment.equipment', 
+                                           page=current_page+1,
+                                           search=search_query,
+                                           model=model_filter,
+                                           manufacturer=manufacturer_filter,
+                                           status=status_filter,
+                                           date_from=date_from,
+                                           date_to=date_to) }}{% else %}#{% endif %}">
                                         <i class="bi bi-chevron-right"></i>
                                     </a>
                                 </li>
                             </ul>
                         </nav>
+                        {% endif %}
                     </div>
                 </div>
             </div>
@@ -224,6 +447,53 @@
             </div>
         </div>
     {% endif %}
+</div>
+
+<!-- ЕДИНОЕ МОДАЛЬНОЕ ОКНО УДАЛЕНИЯ -->
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteModalLabel">Подтверждение удаления</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-warning border-0">
+                    <div class="d-flex">
+                        <i class="bi bi-exclamation-triangle fs-4 me-3"></i>
+                        <div>
+                            <strong>Внимание!</strong> Это действие нельзя отменить. Все данные об оборудовании будут удалены.
+                        </div>
+                    </div>
+                </div>
+                <p class="mb-3">Вы уверены, что хотите удалить оборудование?</p>
+                <div class="card bg-light border-0">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center">
+                            <div class="me-3">
+                                <i class="bi bi-device-hdd fs-4 text-primary"></i>
+                            </div>
+                            <div>
+                                <strong id="deleteEquipmentName"></strong>
+                                <div class="text-muted small">
+                                    Инв. №: <span id="deleteEquipmentInventory"></span> • 
+                                    Модель: <span id="deleteEquipmentModel"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                <form id="deleteForm" method="POST" class="d-inline">
+                    <button type="submit" class="btn btn-danger">
+                        <i class="bi bi-trash me-1"></i> Удалить
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
 </div>
 
 <style>
@@ -257,6 +527,33 @@
         var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
         var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
             return new bootstrap.Tooltip(tooltipTriggerEl);
+        });
+        
+        // Обработка кнопок удаления
+        const deleteModal = new bootstrap.Modal(document.getElementById('deleteModal'));
+        const deleteForm = document.getElementById('deleteForm');
+        const deleteEquipmentName = document.getElementById('deleteEquipmentName');
+        const deleteEquipmentInventory = document.getElementById('deleteEquipmentInventory');
+        const deleteEquipmentModel = document.getElementById('deleteEquipmentModel');
+        
+        document.querySelectorAll('.delete-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                const id = this.getAttribute('data-id');
+                const name = this.getAttribute('data-name');
+                const inventory = this.getAttribute('data-inventory');
+                const model = this.getAttribute('data-model');
+                
+                // Заполняем данные в модальном окне
+                deleteEquipmentName.textContent = name;
+                deleteEquipmentInventory.textContent = inventory;
+                deleteEquipmentModel.textContent = model;
+                
+                // Устанавливаем action формы
+                deleteForm.action = "{{ url_for('equipment.delete_equipment', id=0) }}".replace('0', id);
+                
+                // Показываем модальное окно
+                deleteModal.show();
+            });
         });
         
         // Функция для форматирования времени "сколько назад"

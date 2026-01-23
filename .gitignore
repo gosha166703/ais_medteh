@@ -8,3 +8,4 @@ test.py
 .vscode/
 migrations/
 base_new
+run.sh

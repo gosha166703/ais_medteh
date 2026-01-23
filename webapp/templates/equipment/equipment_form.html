@@ -204,7 +204,49 @@
                                     <small class="form-text text-muted mt-1">Формат: ГГГГ-ММ-ДД</small>
                                 </div>
                             </div>
-                            
+                            <!-- <div class="col-md-6">
+                                <label for="{{ form.time_work.id }}" class="form-label fw-medium">Время наработки</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">
+                                        <i class="bi bi-clock"></i>
+                                    </span>
+                                    {{ form.time_work(class="form-control" + (" is-invalid" if form.time_work.errors else ""), 
+                                                    placeholder="ЧЧ:ММ:СС или дни.ЧЧ:ММ:СС") }}
+                                </div>
+                                {% if form.time_work.errors %}
+                                    <div class="invalid-feedback d-block mt-1">
+                                        {% for error in form.time_work.errors %}
+                                            <i class="bi bi-exclamation-circle me-1"></i>{{ error }}
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                                <small class="form-text text-muted mt-1">
+                                    Формат: дни.ЧЧ:ММ:СС или ЧЧ:ММ:СС (например: 1.12:30:00 или 36:30:00)
+                                </small>
+                            </div> -->
+                        </div>
+                        
+                        <div class="row g-3 mt-3">
+                            <!-- <div class="col-md-6">
+                                <label for="{{ form.downtime.id }}" class="form-label fw-medium">Время простоя</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">
+                                        <i class="bi bi-clock-history"></i>
+                                    </span>
+                                    {{ form.downtime(class="form-control" + (" is-invalid" if form.downtime.errors else ""), 
+                                                placeholder="ЧЧ:ММ:СС или дни.ЧЧ:ММ:СС") }}
+                                </div>
+                                {% if form.downtime.errors %}
+                                    <div class="invalid-feedback d-block mt-1">
+                                        {% for error in form.downtime.errors %}
+                                            <i class="bi bi-exclamation-circle me-1"></i>{{ error }}
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                                <small class="form-text text-muted mt-1">
+                                    Формат: дни.ЧЧ:ММ:СС или ЧЧ:ММ:СС (например: 0.02:15:00 или 02:15:00)
+                                </small>
+                            </div>         -->
                             <div class="row g-3 mt-3">
                                 <div class="col-md-6">
                                     <label for="{{ form.status.id }}" class="form-label fw-medium">

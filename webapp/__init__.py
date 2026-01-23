@@ -14,8 +14,6 @@ from webapp.home.views import blueprint as home_blueprint
 from webapp.user.models import User
 from webapp.user.views import blueprint as user_blueprint
 
-from webapp.equipment.forms import EquipmentForm
-from webapp.equipment.models import Equipment
 from webapp.equipment.views import blueprint as equipment_blueprint
 
 

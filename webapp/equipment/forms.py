@@ -21,8 +21,8 @@ class EquipmentForm(FlaskForm):
     write_off = BooleanField("Оборудование списано?", default=False)
     model = StringField("Модель", validators=[Optional()])
     manufacturer = StringField("Производитель", validators=[Optional()])
-    #time_work = IntegerField("Наработка(часы)", validators=[Optional()], default=0)
-    #downtime =  IntegerField("Время простоя(часы)", validators=[Optional()],default=0)
+    time_work = IntegerField("Наработка(часы)", validators=[Optional()], default=0)
+    downtime =  IntegerField("Время простоя(часы)", validators=[Optional()],default=0)
     last_maintenance = DateField("Дата последнего ТО", format='%Y-%m-%d',
                                  validators=[Optional()])
 

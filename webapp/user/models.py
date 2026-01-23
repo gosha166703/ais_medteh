@@ -12,7 +12,7 @@ class User(Base, UserMixin):
     id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str] = mapped_column(String(120))
     email: Mapped[str] = mapped_column(String(50),unique=True)
-    lastname: Mapped[str] = mapped_column(String(120))
+    lastname: Mapped[str] = mapped_column(String(120), nullable=True)
     password: Mapped[str] = mapped_column(String(1000))
 
     def set_password(self, password):

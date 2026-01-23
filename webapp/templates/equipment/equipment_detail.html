@@ -134,16 +134,16 @@
                                 <label class="form-label text-muted mb-2">
                                     <i class="bi bi-calendar-plus me-1"></i> Дата ввода в эксплуатацию
                                 </label>
-                                <!-- <div class="fs-6">
+                                <div class="fs-6">
                                     {% if equipment.date_entry %}
                                         <span class="fw-semibold">{{ equipment.date_entry.strftime('%d.%m.%Y') }}</span>
                                         <small class="text-muted ms-2 time-ago" data-date="{{ equipment.date_entry.isoformat() }}">
-                                             Рассчитается JS -->
-                                        <!-- </small>
+                                            <!-- Рассчитается JS -->
+                                        </small>
                                     {% else %}
                                         <span class="text-muted">Не указана</span>
                                     {% endif %}
-                                </div> --> 
+                                </div>  
                             </div>
                             
                             <div class="mb-4">
@@ -173,108 +173,6 @@
                 </div>
             </div>
         </div>
-        
-        <!-- Статистика и метаданные -->
-        <div class="col-lg-4">
-            <!-- Статистика -->
-            <div class="card mb-4">
-                <div class="card-header">
-                    <h3 class="mb-0 d-flex align-items-center">
-                        <i class="bi bi-graph-up text-primary me-2"></i> Статистика
-                    </h3>
-                </div>
-                <div class="card-body">
-                    <div class="mb-4">
-                        <label class="form-label text-muted mb-2 d-flex justify-content-between">
-                            <span><i class="bi bi-clock-history me-1"></i> Наработка</span>
-                            <span class="fw-bold text-primary">
-                                {% if equipment.time_work %}
-                                    {{ equipment.time_work.days * 24 + equipment.time_work.seconds // 3600 }}
-                                {% else %}
-                                    0
-                                {% endif %} ч.
-                            </span>
-                        </label>
-                        <div class="progress" style="height: 8px;">
-                            <div class="progress-bar bg-primary" style="width: 100%"></div>
-                        </div>
-                    </div>
-                    
-                    <div class="mb-4">
-                        <label class="form-label text-muted mb-2 d-flex justify-content-between">
-                            <span><i class="bi bi-clock me-1"></i> Время простоя</span>
-                            <span class="fw-bold text-danger">
-                                {% if equipment.downtime %}
-                                    {{ equipment.downtime.days * 24 + equipment.downtime.seconds // 3600 }}
-                                {% else %}
-                                    0
-                                {% endif %} ч.
-                            </span>
-                        </label>
-                        <div class="progress" style="height: 8px;">
-                            <div class="progress-bar bg-danger" style="width: 100%"></div>
-                        </div>
-                    </div>
-                    
-                    <div class="mb-4">
-                        <label class="form-label text-muted mb-2">Коэффициент готовности</label>
-                        {% set total_hours = (equipment.time_work.days * 24 + equipment.time_work.seconds // 3600) if equipment.time_work else 0 %}
-                        {% set downtime_hours = (equipment.downtime.days * 24 + equipment.downtime.seconds // 3600) if equipment.downtime else 0 %}
-                        {% set total = total_hours + downtime_hours %}
-                        {% set readiness = (total_hours / total * 100) if total > 0 else 100 %}
-                        
-                        <div class="d-flex align-items-center">
-                            <div class="progress flex-grow-1 me-3" style="height: 10px;">
-                                <div class="progress-bar bg-success" 
-                                     role="progressbar" 
-                                     style="width: {{ readiness }}%"
-                                     aria-valuenow="{{ readiness }}"
-                                     aria-valuemin="0"
-                                     aria-valuemax="100"></div>
-                            </div>
-                            <div class="fw-bold {{ 'text-success' if readiness >= 90 else 'text-warning' if readiness >= 70 else 'text-danger' }}">
-                                {{ "%.1f"|format(readiness) }}%
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Метаданные -->
-            <div class="card">
-                <div class="card-header">
-                    <h3 class="mb-0 d-flex align-items-center">
-                        <i class="bi bi-clock-history text-primary me-2"></i> Метаданные
-                    </h3>
-                </div>
-                <div class="card-body">
-                    <div class="mb-3">
-                        <label class="form-label text-muted mb-2">Создано</label>
-                        <div class="d-flex align-items-center">
-                            <i class="bi bi-calendar-plus text-muted me-2"></i>
-                            <div>
-                                <div class="fw-medium">{{ equipment.created_at.strftime('%d.%m.%Y') }}</div>
-                                <small class="text-muted">{{ equipment.created_at.strftime('%H:%M') }}</small>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    {% if equipment.updated_at %}
-                    <div>
-                        <label class="form-label text-muted mb-2">Обновлено</label>
-                        <div class="d-flex align-items-center">
-                            <i class="bi bi-arrow-clockwise text-muted me-2"></i>
-                            <div>
-                                <div class="fw-medium">{{ equipment.updated_at.strftime('%d.%m.%Y') }}</div>
-                                <small class="text-muted">{{ equipment.updated_at.strftime('%H:%M') }}</small>
-                            </div>
-                        </div>
-                    </div>
-                    {% endif %}
-                </div>
-            </div>
-        </div>
-    </div>
     
     <!-- Кнопка возврата -->
     <div class="d-flex justify-content-end mt-4">
